@@ -20,18 +20,38 @@ require_once '../models/Publisher.php';
       crossorigin="anonymous"
     />
   </head>
-
   <body>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Bad</th>
-            <th>Good</th>
-            <th>Neutral</th>
-          </tr>
-        </thead>
-      </table>
+    <div style="width: 70%; margin: auto">
+      <!-- Canvas = lienzo = obra de arte -->
+      <canvas id="lienzo"></canvas>
     </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const contexto = document.querySelector("#lienzo")
+    const grafico = new Chart(contexto, {
+      type: 'bar',
+      data:{
+        labels: [],
+        datasets: [{
+          label: "Cantidad de bandos",
+          data: []
+        }]
+      }
+    });
+
+    (function(){
+      fetch(`../controllers/Publisher.controller.php?operacion=graficarBandos`)
+        .then(respuesta=>respuesta.json())
+        .then(datos=>{
+          
+          grafico.data.labels = datos.map(registro=>registro.alignment)
+          grafico.data.labels[3]='N/A'
+          grafico.data.datasets[0].data = datos.map(registro=>registro.cantidad)
+          grafico.update()
+        })
+        .catch(e=>{
+          console.error(e)})
+    })();
+  </script>
   </body>
 </html>

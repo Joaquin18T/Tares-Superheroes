@@ -1,6 +1,7 @@
 <?php
 
-require_once 'Conexion.php';
+require 'Conexion.php';
+
 
 class Publisher extends Conexion{
   private $pdo;
@@ -13,12 +14,12 @@ class Publisher extends Conexion{
     try{
       $consulta = $this->pdo->prepare("CALL spu_buscar_publisher(?)");
       $consulta->execute(
-        array($data['publisher_name'])
+        array($data['publishername'])
       );
-      return $consulta->fetch(PDO::FETCH_ASSOC);
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
     catch(Exception $e){
-      die($e->getMessage);
+      die($e->getMessage());
     }
   }
 
@@ -43,8 +44,10 @@ class Publisher extends Conexion{
       die($e->getMessage());
     }
   }
+
+  
 }
 
-$publisher = new Publisher();
-$resultado = $publisher->graficarBandos();
-echo json_encode($resultado);
+// $publisher = new Publisher();
+// $resultado = $publisher->searchPublisher(["publisher_name"=>"NBC - Heroes"]);
+// echo json_encode($resultado);

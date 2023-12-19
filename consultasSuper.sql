@@ -55,3 +55,6 @@ BEGIN
 END $$
 
 CALL spu_contar_bando;
+
+
+

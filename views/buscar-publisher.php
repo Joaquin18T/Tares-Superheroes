@@ -1,7 +1,3 @@
-<?php
-
-require_once '../models/Publisher.php';
-?>
 <!doctype html>
 <html lang="es">
   <head>
@@ -32,18 +28,19 @@ require_once '../models/Publisher.php';
         </div>
       </div>
     </div>
-    <div>
+    <div class="container table table-striped" style="position: relative; text-align: center; left: 300px;">
       <table id="tabla">
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Race</th>
-            <th></th>
+            <th style="width: 50px;">Id</th>
+            <th style="width: 150px;">Distribuidora</th>
+            <th style="width: 100px;">SuperHeroe</th>
+            <th style="width: 150px;">fullName</th>
+            <th style="width: 100px;">Genero</th>
+            <th style="width: 100px;">Raza</th>
           </tr>
         </thead >
-        <tbody id="heroesTable">
+        <tbody id="tablaHeroes">
 
         </tbody>
       </table>
@@ -54,47 +51,63 @@ require_once '../models/Publisher.php';
 
         (function(){
           fetch(`../controllers/Publisher.controller.php?operacion=listar`)
-            .then(respuesta => respuesta.json())
+            .then(respuesta=>respuesta.json())
             .then(datos=>{
               datos.forEach(element => {
                 const tagOption = document.createElement("option")
-                tagOption.value = element.id
+                tagOption.value = element.publisher_name
                 tagOption.innerHTML = element.publisher_name
                 $("#publisher").appendChild(tagOption)
               });
             })
             .catch(e=>{
               console.error(e)})
-        })()
-
-        const listarSuperheroes = () =>{
+        })();
+        
+        function buscar(){
+          const publisher = $("#publisher").value
           const parametros = new FormData()
-          parametros.append("operacion", "listar")
-          parametros.append("operacion", "DC Comics")
 
-          fetch(`../controllers/Publisher.controller.php?`,{
-            method: 'POST',
+          parametros.append("operacion", "searchPublisher")
+          parametros.append("publishername", publisher)
+
+          fetch(`../controllers/Publisher.controller.php`,{
+            method: "POST",
             body: parametros
           })
-            .then(respuesta => respuesta.json())
-            .then(datos =>{
-              datos.forEach(element => {
-                const row = document.createElement("tr")
+          .then(respuesta=>respuesta.json())
+          .then(datos=>{
+            //console.log(datos)
+            datos.forEach(data => {
+              const row = document.createElement("tr")
 
-                Object.values(element).forEach(value =>{
-                  const data = document.createElement("td")
-                  data.innerHTML = value;
-                  row.appendChild(data);
-                });
-                $("#heroesTable").appendChild(row)
+              Object.values(data).forEach(dato=>{
+                const datoSuper = document.createElement("td")
+                datoSuper.innerHTML=dato
+                row.appendChild(datoSuper)
               });
-            })
-            .catch()
-        }
+              $("#tablaHeroes").appendChild(row)
+            });
 
-        $("#publisher").addEventListener("change", (event)=>{
-            listarSuperheroes()
+          })
+          .catch()
+        }
+        function limpiar(){
+          document.querySelector("#tablaHeroes").innerHTML=""
+        }
+        
+        $("#publisher").addEventListener("change",(event)=>{
+
+            buscar();
+            if($("#tablaHeroes")!=""){
+              setTimeout(limpiar, 0)
+            }
+            
         })
+        
+          
+
+
       })
     </script>
   </body>
