@@ -29,7 +29,7 @@ BEGIN
 
 END $$
 
-CALL spu_buscar_publisher ("NBC - Heroes");
+CALL spu_buscar_publisher ("ABC Studios");
 
 DELIMITER $$
 CREATE PROCEDURE spu_listar_publisher()
@@ -54,7 +54,25 @@ BEGIN
     GROUP BY ALI.alignment;
 END $$
 
+
 CALL spu_contar_bando;
 
+DELIMITER $$
+CREATE PROCEDURE spu_contarAlig_publisher(IN _publisher_name VARCHAR(50))
+BEGIN
+	SELECT 
+    ALI.alignment,
+    COUNT(ALI.alignment) total
+    FROM superhero SUP
+    INNER JOIN alignment ALI ON ALI.id = SUP.alignment_id
+    INNER JOIN publisher PUB ON PUB.id = SUP.publisher_id
+    WHERE PUB.publisher_name = _publisher_name
+    GROUP BY ALI.alignment;
+END $$
 
+CALL spu_contarAlig_publisher ('DC Comics');
+
+
+
+    
 

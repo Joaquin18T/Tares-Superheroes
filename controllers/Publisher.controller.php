@@ -10,6 +10,12 @@ if(isset($_POST['operacion'])){
     sleep(1);
     echo json_encode($respuesta);
   }
+
+  if($_POST['operacion'] == 'graficarBandosPublisher'){
+    $respuesta = $publisher->graficarBandosPublisher(["publishname"=>$_POST['publishname']]);
+    sleep(1);
+    echo json_encode($respuesta);
+  }
 }
 
 if(isset($_GET['operacion'])){
@@ -26,5 +32,5 @@ if(isset($_GET['operacion'])){
 }
 
 // $publisher = new Publisher();
-// $mostrar = $publisher->searchPublisher(["publisher_name"=>"NBC - Heroes"]);
+// $mostrar = $publisher->graficarBandosPublisher(["publishname"=>"DC Comics"]);
 // echo json_encode($mostrar);

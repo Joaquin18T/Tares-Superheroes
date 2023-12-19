@@ -45,9 +45,22 @@ class Publisher extends Conexion{
     }
   }
 
+  public function graficarBandosPublisher($data=[]){
+    try{
+      $consulta = $this->pdo->prepare("CALL spu_contarAlig_publisher(?)");
+      $consulta->execute(
+        array($data['publishname'])
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch (Exception $e){
+      die($e->getMessage());
+    }
+  }
+
   
 }
 
 // $publisher = new Publisher();
-// $resultado = $publisher->searchPublisher(["publisher_name"=>"NBC - Heroes"]);
+// $resultado = $publisher->graficarBandosPublisher(["publishname"=>"Marvel Comics"]);
 // echo json_encode($resultado);
