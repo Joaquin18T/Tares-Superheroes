@@ -58,9 +58,26 @@ class Publisher extends Conexion{
     }
   }
 
+  public function cantsuperPublisher($data=[]){
+    try{
+      $consulta = $this->pdo->prepare("CALL spu_contarsuper_publisher(?)");
+      $consulta->execute(
+        array($data['totalsuper'])
+      );
+      return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch (Exception $e){
+      die($e->getMessage());
+    }
+  }
   
 }
 
+//CONSEJO: EL FETCH DEVUELVE UN OBJETO, PERO FETCHALL DEVUELVE UN ARRAY
+
+
+
+
 // $publisher = new Publisher();
-// $resultado = $publisher->graficarBandosPublisher(["publishname"=>"Marvel Comics"]);
+// $resultado = $publisher->cantsuperPublisher(["totalsuper"=>"Marvel Comics"]);
 // echo json_encode($resultado);

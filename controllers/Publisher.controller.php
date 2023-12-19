@@ -16,6 +16,12 @@ if(isset($_POST['operacion'])){
     sleep(1);
     echo json_encode($respuesta);
   }
+
+  if($_POST['operacion'] == 'cantsuperPublisher'){
+    $respuesta = $publisher->cantsuperPublisher(["totalsuper"=>$_POST['totalsuper']]);
+    sleep(1);
+    echo json_encode($respuesta);
+  }
 }
 
 if(isset($_GET['operacion'])){
@@ -29,8 +35,13 @@ if(isset($_GET['operacion'])){
   if($_GET['operacion'] == 'graficarBandos'){
     echo json_encode($publisher->graficarBandos());
   }
+
+  // if($_GET['operacion'] == 'cantsuperPublisher'){
+  //   $resultado = $publisher->cantsuperPublisher();
+  //   echo json_encode($resultado);
+  // }
 }
 
 // $publisher = new Publisher();
-// $mostrar = $publisher->graficarBandosPublisher(["publishname"=>"DC Comics"]);
+// $mostrar = $publisher->cantsuperPublisher(["totalsuper"=>"DC Comics"]);
 // echo json_encode($mostrar);

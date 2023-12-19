@@ -19,9 +19,9 @@
     </head>
 
     <body>
-        <div class="container">
+        <div class="container" style="width: 300px; position:relative; right: 450px">
             <div class="alert alert-info mt-3">
-                <div class="mb-3">
+                <div class="mb-3" >
                     <label for="publisher" class="form-label"></label>
                     <select  name="publisher" id="publisher" class="form-select" required>
                         <option value="">Seleccione</option>
@@ -29,70 +29,79 @@
                 </div>
             </div>
         </div>
-        <div style="width: 70%; margin: auto; position:relative; left: 20px">
-        <!-- Canvas = lienzo = obra de arte -->
-        <canvas id="lienzo"></canvas>
+        <div class="container" style="padding-top: 20px;">
+            <button type="button" id="aumentar" class="btn btn-success">+</button>
+            <button type="button" id="restar" class="btn btn-danger">-</button>
+        </div>
+        <div style="width: 70%; margin: auto">
+      <!-- Canvas = lienzo = obra de arte -->
+            <canvas id="lienzo"></canvas>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <script>
             document.addEventListener("DOMContentLoaded", ()=>{
-                function $(id){ return document.querySelector(id)}
+                function $(id){return document.querySelector(id)}
 
                 (function(){
                     fetch(`../controllers/Publisher.controller.php?operacion=listar`)
                         .then(respuesta=>respuesta.json())
                         .then(datos=>{
-                            datos.forEach(data => {
-                                const TagOption = document.createElement("option")
-                                TagOption.value = data.publisher_name
-                                TagOption.innerHTML = data.publisher_name
-                                $("#publisher").appendChild(TagOption)
+                            datos.forEach(element => {
+                                const tag = document.createElement("option")
+                                tag.value = element.publisher_name
+                                tag.innerHTML = element.publisher_name
+                                $("#publisher").appendChild(tag)
+
                             });
                         })
                         .catch(e=>{console.error(e)})
-                })();
+                })()
 
                 const contexto = document.querySelector("#lienzo")
                 const grafico = new Chart(contexto, {
-                    type: 'bar',
+                    type: 'pie',
                     data: {
                         labels: [],
+                        datasets: [{
+                            label: "Cantidad de Super Heroes por Publisher",
+                            data: []
+                        }],
                         datasets:[{
-                            label: "Cantidad de bandos por Publisher",
+                            label: "Cantidad de Super Heroes por Publisher2",
                             data: []
                         }]
                     }
                 });
 
-                function buscar(){
+
+                function mostrar(){
                     const publisher = document.querySelector("#publisher").value
                     const parametros = new FormData()
 
-                    parametros.append("operacion", "graficarBandosPublisher")
-                    parametros.append("publishname", publisher)
+                    parametros.append("operacion", "cantsuperPublisher")
+                    parametros.append("totalsuper", $("#publisher").value)
 
                     fetch(`../controllers/Publisher.controller.php`, {
                         method: "POST",
                         body: parametros
                     })
                         .then(respuesta=>respuesta.json())
-                        .then(datos=>{
-                            //console.log(datos)
-                            grafico.data.labels = datos.map(valor=>valor.alignment)
-                            grafico.data.datasets[0].data = datos.map(valor=>valor.total)
+                        .then(value=>{
+                            console.log(value)                           
+                            grafico.data.labels = value.map(valor=>valor.publisher)
+                            grafico.data.datasets[0].data = value.map(valor=>valor.total)
                             grafico.update()
+                            //contador de click en datasets
                         })
                         .catch(e=>{console.error(e)})
                 };
 
-                $("#publisher").addEventListener("change",()=>{
-                    buscar()
+                document.querySelector("#publisher").addEventListener("change", ()=>{
+                    mostrar();
                 })
-            })
 
 
-
+            });
 
         </script>
     </body>
