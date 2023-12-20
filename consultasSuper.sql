@@ -72,6 +72,20 @@ END $$
 
 CALL spu_contarAlig_publisher ('DC Comics');
 
+DELIMITER $$
+CREATE PROCEDURE spu_contarsuper_publisher(IN _publisher_name VARCHAR(50))
+BEGIN	
+	SELECT 
+    PUB.publisher_name publisher,
+    COUNT(SUP.superhero_name) total
+    FROM superhero SUP
+    INNER JOIN publisher PUB ON PUB.id = SUP.publisher_id
+    WHERE PUB.publisher_name = _publisher_name;
+END $$
+
+CALL spu_contarsuper_publisher ('Marvel Comics');
+
+
 
 
     

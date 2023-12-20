@@ -40,8 +40,10 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", ()=>{
-                function $(id){return document.querySelector(id)}
 
+                let cont = 0, cont2=0
+                function $(id){return document.querySelector(id)}
+                
                 (function(){
                     fetch(`../controllers/Publisher.controller.php?operacion=listar`)
                         .then(respuesta=>respuesta.json())
@@ -65,11 +67,8 @@
                         datasets: [{
                             label: "Cantidad de Super Heroes por Publisher",
                             data: []
-                        }],
-                        datasets:[{
-                            label: "Cantidad de Super Heroes por Publisher2",
-                            data: []
                         }]
+
                     }
                 });
 
@@ -87,17 +86,40 @@
                     })
                         .then(respuesta=>respuesta.json())
                         .then(value=>{
-                            console.log(value)                           
-                            grafico.data.labels = value.map(valor=>valor.publisher)
-                            grafico.data.datasets[0].data = value.map(valor=>valor.total)
-                            grafico.update()
-                            //contador de click en datasets
+
+                            $("#aumentar").addEventListener("click",()=>{
+                                grafico.data.labels = value.map(valor=>valor.publisher)
+                                grafico.data.datasets[0].data = value.map(valor=>valor.total)
+                                grafico.update()
+
+                                if(cont2>1){
+                                    grafico.data.datasets[0].data.unshift(value.map(valor=>valor.total))
+                                    grafico.update()
+                                    console.log(grafico.data.datasets[0].data)
+                                }
+                            })
+
+                            $("#restar").addEventListener("click",()=>{
+                                grafico.data.datasets[0].data.pop(1)
+                                grafico.update()
+                                console.log(grafico.data.datasets[0].data)
+                                
+                            })
+                            
+                           
+                            console.log(cont2)                           
+                            
+                            
                         })
                         .catch(e=>{console.error(e)})
+
+
                 };
 
                 document.querySelector("#publisher").addEventListener("change", ()=>{
+                    cont2+=1;
                     mostrar();
+                    
                 })
 
 
