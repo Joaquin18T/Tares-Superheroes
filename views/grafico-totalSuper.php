@@ -59,6 +59,11 @@
                         .catch(e=>{console.error(e)})
                 })()
 
+                let acumdates={
+                    labels: [],
+                    data: []
+                }
+
                 const contexto = document.querySelector("#lienzo")
                 const grafico = new Chart(contexto, {
                     type: 'pie',
@@ -66,7 +71,12 @@
                         labels: [],
                         datasets: [{
                             label: "Cantidad de Super Heroes por Publisher",
-                            data: []
+                            data: [],
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 205, 86)'
+                            ],
                         }]
 
                     }
@@ -86,25 +96,23 @@
                     })
                         .then(respuesta=>respuesta.json())
                         .then(value=>{
+                            acumdates.labels = [...acumdates.labels, ...value.map(valor=>valor.publisher)]
+                            acumdates.data = [...acumdates.data, ...value.map(valor=>valor.total)]
+
+                            // grafico.data.labels = acumdates.labels
+                            // grafico.data.datasets[0].data = acumdates.data
+                            // grafico.update()
+                            // console.log(grafico.data.datasets[0].data)
 
                             $("#aumentar").addEventListener("click",()=>{
-                                grafico.data.labels = value.map(valor=>valor.publisher)
-                                grafico.data.datasets[0].data = value.map(valor=>valor.total)
-                                grafico.update()
+                                // acumdates.labels = [...acumdates.labels, ...value.map(valor=>valor.publisher)]
+                                // acumdates.data = [...acumdates.data, ...value.map(valor=>valor.total)]
 
-                                if(cont2>1){
-                                    grafico.data.datasets[0].data.unshift(value.map(valor=>valor.total))
-                                    grafico.update()
-                                    console.log(grafico.data.datasets[0].data)
-                                }
+                                grafico.data.labels = acumdates.labels
+                                grafico.data.datasets[0].data = acumdates.data
+                                grafico.update()
                             })
 
-                            $("#restar").addEventListener("click",()=>{
-                                grafico.data.datasets[0].data.pop(1)
-                                grafico.update()
-                                console.log(grafico.data.datasets[0].data)
-                                
-                            })
                             
                            
                             console.log(cont2)                           
@@ -115,6 +123,13 @@
 
 
                 };
+                document.querySelector("#restar").addEventListener("click",()=>{
+                    grafico.data.datasets[0].data.pop()
+                    grafico.data.labels.pop()
+                    console.log(grafico.data.datasets[0].data)
+                    grafico.update()
+                                
+                })
 
                 document.querySelector("#publisher").addEventListener("change", ()=>{
                     cont2+=1;
